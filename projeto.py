@@ -10,27 +10,45 @@ import subprocess
 
 # Cria uma função main onde:
 def main():
-    print("-"*50)
-    print("𝔼𝕩𝕡𝕝𝕠𝕣𝕒𝕕𝕠𝕣 𝕕𝕖 𝔸𝕣𝕢𝕦𝕚𝕧𝕠𝕤")
-    print("-"*50)
 
     # Diretório atual é atribuído para uma variável.
     diretorioAtual = os.getcwd()
 
-    # Entra em uma estrutura de repetição que mostra o diretório e os itens dentro desse diretório, enumerando-os com um For (onde o i é o contador, item é o item dentro do diretório e o parâmetro 
-    # ENUMERATE cria um contador automático onde, a partir do número 1, enumera itens de dentro da variável ItensDiretório.)
+# Entra em um looping para repetir a entrada de comando até o usuário mandar o programar parar 
     while True:
-        print("Você está nesse diretório: ", diretorioAtual)
+
         itensDiretorio = os.listdir(diretorioAtual)
 
-        for i, item in enumerate(itensDiretorio, start= 1):
-            print(i,".", item)
-
     # Aqui, ele cria uma variável para pegar o comando em caixa baixa do usuário, para que ele possa realizar outros processos, como a navegação e o subprocess.    
-        comando = input("GIM>> ").lower()
+        comando = input(f'\nGIM {diretorioAtual}>> ').lower().strip()
+
+        if comando == "" or comando == "cd.".strip():
+            continue
+
+    # Lista todas as pastas do diretório atual
+        elif comando == "dir".strip():
+            print("O volume na unidade C não tem nome.")
+            print("O Número de Série do Volume é não sei ainda como faz\n")
+            for item in itensDiretorio:
+                print(item)
+
+      # Só printa o repositório atual e não muda mais nada
+        elif comando == "cd".strip():
+            print(diretorioAtual)
+        
+    # Volta para o repositório anterior do atual
+        elif comando == "cd..":
+            os.chdir("..")
+            diretorioAtual = os.getcwd()
+        
+    #Troca o diretório para a pasta que o usuário digitou
+        elif comando.startswith("cd "): 
+            novoDiretorio = comando[3:]
+            os.chdir(novoDiretorio)
+            diretorioAtual = os.getcwd()
 
     # Caso o comando for "Sair", ele acabará a repetição.    
-        if comando == "sair":
+        elif comando == "sair".lower():
             print("Saindo...")
             break
     

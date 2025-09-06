@@ -59,7 +59,7 @@ def main():
             print(HistoricoArray)
         
         else:
-            print("Comando não encontrado.")
+            print("Erro ao executar o comando.")
         
         # sair
         if comando in ['sair', 'quit']:
@@ -79,3 +79,4 @@ def buffer():
     run_in_terminal(buffer)
 
 main()
+

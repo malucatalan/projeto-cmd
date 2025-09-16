@@ -1,30 +1,60 @@
 import os
-from prompt_toolkit import prompt
-from prompt_toolkit.application import run_in_terminal
-from prompt_toolkit.key_binding import KeyBindings
 
 HistoricoArray = []
-atalhos = KeyBindings() 
-i = 0
-@atalhos.add("up")
+i = len(HistoricoArray)
+
+# cria uma função para o buffer
+def buffer(comando,HistoricoArray):
+
+        try:
+            if comando == '!!':
+
+                # avisa o usuário se o histórico estiver vazio
+                if not HistoricoArray:
+                    print('Histórico de comandos vazio.')
+                    return None
+                
+                # cria uma variável para o comando anterior que foi salvo na histórico
+                comando_historico = HistoricoArray[-1]
+                HistoricoArray.append(comando)
+            
+            else: 
+                # verifica com o índice utilizado para chamar o comando
+                indice = int(comando[1:])
+                comando_historico = HistoricoArray[indice]
+                HistoricoArray.append(comando)
+
+            return comando_historico
+
+        except (ValueError,IndexError):
+            print(f"'{comando}' não é um comando válido")
 
 # Cria uma função main onde:
 def main():
 
     # Diretório atual é atribuído para uma variável.
     diretorioAtual = os.getcwd()
+    c = 0
 
-# Entra em um looping para repetir a entrada de comando até o usuário mandar o programar parar 
+    # Entra em um looping para repetir a entrada de comando até o usuário mandar o programar parar 
     while True:
         itensDiretorio = os.listdir()
         
-    # Aqui, ele cria uma variável para pegar o comando em caixa baixa do usuário, para que ele possa realizar outros processos, como a navegação e o subprocess.    
+        # Aqui, ele cria uma variável para pegar o comando em caixa baixa do usuário, para que ele possa realizar outros processos, como a navegação e o subprocess.    
         comando = input(f'\nGIM {diretorioAtual}>> ').lower().strip()
         
+        # executa novamente o comando que está no histórico 
+        if comando.startswith('!!') or (comando.startswith('!') and len(comando) > 1):
+            rodar_historico = buffer(comando, HistoricoArray)
+            if rodar_historico:
+                print(f'Executando comando: {rodar_historico}')
+                comando = rodar_historico
+    
         # ignora
         if comando == "":
             continue
 
+        # lista os comandos disponíveis
         elif comando == 'task':
             print("DIR                             Lista todos os itens no diretório atual.")
             print("CD <DIRETORIO>                  Muda para o diretório especificado.")
@@ -32,13 +62,16 @@ def main():
             print("HISTORY                         Mostra o histórico de comandos.")
             print("TASK                            Mostra esta lista de comandos.")
             print("OPEN <APLICATIVO>               Abre o aplicativo especificado.")
+            print("!!                              Volta para o comando anterior.")
+            print("!i                              Volta para o comando com o índice i indicado.")
             print("EXIT                            Finaliza o shell G.I.M.")
             HistoricoArray.append(comando)
 
         # lista o histórico de comandos chamados
         elif comando in ['history']:
-            for item in HistoricoArray:
-                print(item)
+            for c, item in enumerate(HistoricoArray):
+                print(f'[{c}] {item}')
+            HistoricoArray.append(comando)
 
         # volta diretório
         elif comando == "cd ..":
@@ -77,25 +110,17 @@ def main():
             print("Fim da execução do shell G.I.M")
             break
 
+        elif comando.startswith('!') and len(comando) > 1:
+            comando = buffer(comando,HistoricoArray)
+            print(comando)
+
+        
+
         # condição de erro para comandos inválidos
         else:
             print(f"'{comando}' não é um comando válido")
             HistoricoArray.append(comando)
-
-    # criar a função buffer onde:
-    def buffer():
-
-        # acessa a variável global i
-        global i
-
-        if i == len(HistoricoArray):
-            i = 0
-
-        # printa o comando atual
-        print(HistoricoArray[0+i])
-        i += 1
-
-        run_in_terminal(buffer)
+    
 
     # inicia o programa chamando a função main
 main()

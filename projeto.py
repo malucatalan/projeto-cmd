@@ -11,13 +11,13 @@ i = 0
 # Cria uma função main onde:
 def main():
 
-    run_in_terminal(buffer)
     # Diretório atual é atribuído para uma variável.
     diretorioAtual = os.getcwd()
 
 # Entra em um looping para repetir a entrada de comando até o usuário mandar o programar parar 
     while True:
         itensDiretorio = os.listdir()
+        
     # Aqui, ele cria uma variável para pegar o comando em caixa baixa do usuário, para que ele possa realizar outros processos, como a navegação e o subprocess.    
         comando = input(f'\nGIM {diretorioAtual}>> ').lower().strip()
         
@@ -30,7 +30,8 @@ def main():
             print("CD <DIRETORIO>                  Muda para o diretório especificado.")
             print("CD ..                           Volta para o diretório anterior.")
             print("HISTORY                         Mostra o histórico de comandos.")
-            print("TASKS                           Mostra esta lista de comandos.")
+            print("TASK                            Mostra esta lista de comandos.")
+            print("OPEN <APLICATIVO>               Abre o aplicativo especificado.")
             print("EXIT                            Finaliza o shell G.I.M.")
             HistoricoArray.append(comando)
 
@@ -62,6 +63,14 @@ def main():
 
             except:
                 print(f"Diretório não encontrado: {novoDiretorio}")
+        
+        # abre o aplicativo indicado
+        elif comando.startswith("open "):
+            comando_open = comando[5:].strip()
+
+            HistoricoArray.append(comando)
+            os.system(comando_open)
+        
 
         # sair 
         elif comando in ['exit']:
@@ -89,4 +98,4 @@ def main():
         run_in_terminal(buffer)
 
     # inicia o programa chamando a função main
-    main()
+main()

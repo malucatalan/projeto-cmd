@@ -110,11 +110,6 @@ def main():
             print("Fim da execução do shell G.I.M")
             break
 
-        elif comando.startswith('!') and len(comando) > 1:
-            comando = buffer(comando,HistoricoArray)
-            print(comando)
-
-        
 
         # condição de erro para comandos inválidos
         else:
@@ -123,4 +118,5 @@ def main():
     
 
     # inicia o programa chamando a função main
+
 main()

@@ -33,7 +33,6 @@ def main():
 
     # Diretório atual é atribuído para uma variável.
     diretorioAtual = os.getcwd()
-    c = 0
 
     # Entra em um looping para repetir a entrada de comando até o usuário mandar o programar parar 
     while True:
@@ -114,3 +113,4 @@ def main():
             os.system(comando)
 
 main()
+

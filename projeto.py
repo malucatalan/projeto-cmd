@@ -2,6 +2,7 @@ import os
 
 HistoricoArray = []
 i = len(HistoricoArray)
+
 # cria uma função para o buffer
 def buffer(comando,HistoricoArray):
 
@@ -41,20 +42,26 @@ def main():
         # Aqui, ele cria uma variável para pegar o comando em caixa baixa do usuário, para que ele possa realizar outros processos, como a navegação e o subprocess.    
         comando = input(f'\nGIM {diretorioAtual}>> ').lower().strip()
 
+        # ignora
         if comando == "":
             continue
         
         # executa novamente o comando que está no histórico 
         if comando.startswith('!!') or (comando.startswith('!') and len(comando) > 1):
             rodar_historico = buffer(comando, HistoricoArray)
+
             if rodar_historico:
                 print(f'Executando comando: {rodar_historico}')
                 comando = rodar_historico
 
+        # verifica se o usuário chamou a função de mudar diretório ou open
         if comando.startswith('cd ') or comando.startswith('open '):
+
+            # abre o diretório indicado
             if comando.startswith("cd "): 
                 novoDiretorio = comando[3:].strip()
 
+                # atualiza a variável do diretório
                 try:
                     os.chdir(novoDiretorio)
                     diretorioAtual = os.getcwd()
@@ -70,7 +77,10 @@ def main():
                 HistoricoArray.append(comando)
                 os.system(comando_open)
 
+        # verifica se o comando esta na lista dos comandos personalizados 
         elif comando in ['dir', 'cd ..', 'history', 'task', 'exit', '!!']:
+
+            # lista os comandos personalizados
             if comando == 'task':
                 print("DIR                             Lista todos os itens no diretório atual.")
                 print("CD <DIRETORIO>                  Muda para o diretório especificado.")
@@ -106,11 +116,14 @@ def main():
                 print("Fim da execução do shell G.I.M")
                 break
 
+            # mensagem de erro para comandos inválidos
             else:
                 print(f"'{comando}' não é um comando válido")
                 HistoricoArray.append(comando)
+
+        # chama a função os.system para comandos base do shell
         else:
             os.system(comando)
 
+# inicia o programa chamando a função main
 main()
-

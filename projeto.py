@@ -2,7 +2,6 @@ import os
 
 HistoricoArray = []
 i = len(HistoricoArray)
-
 # cria uma função para o buffer
 def buffer(comando,HistoricoArray):
 
@@ -42,6 +41,9 @@ def main():
         
         # Aqui, ele cria uma variável para pegar o comando em caixa baixa do usuário, para que ele possa realizar outros processos, como a navegação e o subprocess.    
         comando = input(f'\nGIM {diretorioAtual}>> ').lower().strip()
+
+        if comando == "":
+            continue
         
         # executa novamente o comando que está no histórico 
         if comando.startswith('!!') or (comando.startswith('!') and len(comando) > 1):
@@ -49,74 +51,66 @@ def main():
             if rodar_historico:
                 print(f'Executando comando: {rodar_historico}')
                 comando = rodar_historico
-    
-        # ignora
-        if comando == "":
-            continue
 
-        # lista os comandos disponíveis
-        elif comando == 'task':
-            print("DIR                             Lista todos os itens no diretório atual.")
-            print("CD <DIRETORIO>                  Muda para o diretório especificado.")
-            print("CD ..                           Volta para o diretório anterior.")
-            print("HISTORY                         Mostra o histórico de comandos.")
-            print("TASK                            Mostra esta lista de comandos.")
-            print("OPEN <APLICATIVO>               Abre o aplicativo especificado.")
-            print("!!                              Volta para o comando anterior.")
-            print("!i                              Volta para o comando com o índice i indicado.")
-            print("EXIT                            Finaliza o shell G.I.M.")
-            HistoricoArray.append(comando)
+        if comando.startswith('cd ') or comando.startswith('open '):
+            if comando.startswith("cd "): 
+                novoDiretorio = comando[3:].strip()
 
-        # lista o histórico de comandos chamados
-        elif comando in ['history']:
-            for c, item in enumerate(HistoricoArray):
-                print(f'[{c}] {item}')
-            HistoricoArray.append(comando)
+                try:
+                    os.chdir(novoDiretorio)
+                    diretorioAtual = os.getcwd()
+                    HistoricoArray.append(comando)
 
-        # volta diretório
-        elif comando == "cd ..":
-            os.chdir('..')
-            diretorioAtual = os.getcwd()
-            HistoricoArray.append(comando)
+                except:
+                    print(f"Diretório não encontrado: {novoDiretorio}")
+            
+            # abre o aplicativo indicado
+            else: 
+                comando_open = comando[5:].strip()
 
-        # lista diretórios
-        elif comando == "dir".strip():
-            HistoricoArray.append(comando)
-            for item in itensDiretorio:
-                print(item)
+                HistoricoArray.append(comando)
+                os.system(comando_open)
 
-        # muda diretorio para outro específico
-        elif comando.startswith("cd "): 
-            novoDiretorio = comando[3:].strip()
+        elif comando in ['dir', 'cd ..', 'history', 'task', 'exit', '!!']:
+            if comando == 'task':
+                print("DIR                             Lista todos os itens no diretório atual.")
+                print("CD <DIRETORIO>                  Muda para o diretório especificado.")
+                print("CD ..                           Volta para o diretório anterior.")
+                print("HISTORY                         Mostra o histórico de comandos.")
+                print("TASK                            Mostra esta lista de comandos.")
+                print("OPEN <APLICATIVO>               Abre o aplicativo especificado.")
+                print("!!                              Volta para o comando anterior.")
+                print("!i                              Volta para o comando com o índice i indicado.")
+                print("EXIT                            Finaliza o shell G.I.M.")
+                HistoricoArray.append(comando)
 
-            try:
-                os.chdir(novoDiretorio)
+            # lista o histórico de comandos chamados
+            elif comando in ['history']:
+                for c, item in enumerate(HistoricoArray):
+                    print(f'[{c}] {item}')
+                HistoricoArray.append(comando)
+
+            # volta diretório
+            elif comando == "cd ..":
+                os.chdir('..')
                 diretorioAtual = os.getcwd()
                 HistoricoArray.append(comando)
 
-            except:
-                print(f"Diretório não encontrado: {novoDiretorio}")
-        
-        # abre o aplicativo indicado
-        elif comando.startswith("open "):
-            comando_open = comando[5:].strip()
+            # lista diretórios
+            elif comando == "dir".strip():
+                HistoricoArray.append(comando)
+                for item in itensDiretorio:
+                    print(item)
 
-            HistoricoArray.append(comando)
-            os.system(comando_open)
-        
+            # sair 
+            elif comando in ['exit']:
+                print("Fim da execução do shell G.I.M")
+                break
 
-        # sair 
-        elif comando in ['exit']:
-            print("Fim da execução do shell G.I.M")
-            break
-
-
-        # condição de erro para comandos inválidos
+            else:
+                print(f"'{comando}' não é um comando válido")
+                HistoricoArray.append(comando)
         else:
-            print(f"'{comando}' não é um comando válido")
-            HistoricoArray.append(comando)
-    
-
-    # inicia o programa chamando a função main
+            os.system(comando)
 
 main()
